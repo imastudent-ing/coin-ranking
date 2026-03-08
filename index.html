@@ -223,14 +223,7 @@ function render() {
     const top = sorted[0];
     document.getElementById('sBest').textContent = fmt(top.maxRate) || '—';
     document.getElementById('sBestName').textContent = top.sym + ' · ' + top.name;
-    const avgMax = validMax.reduce((a,c)=>a+c.maxRate,0)/validMax.length;
-    document.getElementById('sAvgMax').textContent = fmt(avgMax) || '—';
-    if (validNow.length) {
-      const avgNow = validNow.reduce((a,c)=>a+c.nowRate,0)/validNow.length;
-      const el = document.getElementById('sAvgNow');
-      el.textContent = fmt(avgNow) || '—';
-      el.className = 's-val ' + (avgNow >= 0 ? 'green' : 'red');
-    }
+
   }
 
   const maxOfMax = Math.max(...sorted.map(c => Math.abs(c.maxRate||0)), 1);
