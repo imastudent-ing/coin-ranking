@@ -34,7 +34,7 @@ header { text-align:center; padding:28px 20px 20px; border-bottom:2px solid #1a1
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 .summary-wrap {
   max-width:960px; margin:20px auto 0; padding:0 16px;
-  display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+  display:grid; grid-template-columns:1fr; gap:10px; max-width:320px; margin:20px auto 0;
 }
 .sum-box { background:#0e1219; border:1px solid #1e2a3a; padding:14px 16px; text-align:center; }
 .s-label { font-size:10px; color:#555; font-weight:400; margin-bottom:6px; letter-spacing:1px; }
@@ -92,9 +92,11 @@ header { text-align:center; padding:28px 20px 20px; border-bottom:2px solid #1a1
 .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 .status-msg { text-align:center; padding:50px 20px; font-size:13px; font-weight:400; color:#555; line-height:2.5; }
 @media(max-width:600px){
-  .rank-header,.mc-cell,.bar-full { display:none; }
-  .rank-row { grid-template-columns:46px 1fr 130px; }
-  .max-rate { font-size:28px; }
+  .rank-header,.bar-full { display:none; }
+  .rank-row { grid-template-columns:46px 1fr 100px 110px; }
+  .max-rate { font-size:22px; }
+  .mc-now { font-size:13px; }
+  .mc-base { font-size:9px; }
 }
 </style>
 </head>
@@ -115,21 +117,14 @@ header { text-align:center; padding:28px 20px 20px; border-bottom:2px solid #1a1
     <div class="s-val gold" id="sBest">—</div>
     <div class="s-sub" id="sBestName"></div>
   </div>
-  <div class="sum-box">
-    <div class="s-label">📈 MAX 平均（全16コイン）</div>
-    <div class="s-val gold" id="sAvgMax">—</div>
-  </div>
-  <div class="sum-box">
-    <div class="s-label">⚡ 現在 平均</div>
-    <div class="s-val green" id="sAvgNow">—</div>
-  </div>
+
 </div>
 
 <div class="ranking-wrap">
   <div class="rank-header">
     <div>順位</div>
     <div>コイン（タップでCAコピー）</div>
-    <div style="text-align:right">現在MC / 起点MC</div>
+    <div style="text-align:right">現在MC / 起点MC / 最高MC</div>
     <div style="text-align:right">最大上昇率 / 現在</div>
   </div>
   <div id="rankList"><div class="status-msg">価格データ取得中...</div></div>
@@ -300,6 +295,7 @@ function render() {
       <div class="mc-cell">
         <div class="mc-now">${fmtMC(c.nowMCval)}</div>
         <div class="mc-base">起点: ${fmtMC(c.baseMC)}</div>
+        <div class="mc-base" style="color:#ffcc00">最高: ${fmtMC(maxMC[c.addr])}</div>
       </div>
       <div class="rate-cell">
         <div class="max-rate ${maxCls}">${maxText}</div>
@@ -320,7 +316,7 @@ function render() {
 render();
 fetchAll();
 initMaxMC(); // サーバーから過去最高値を取得
-setInterval(fetchAll, 60000);
+setInterval(fetchAll, 15000);
 </script>
 
 </body>
