@@ -207,8 +207,9 @@ async function fetchDex() {
 
 async function fetchAll() {
   try { await fetchDex(); render(); } catch(e) {
-    document.getElementById('rankList').innerHTML =
-      `<div class="status-msg">⚠️ データ取得失敗<br>ページを再読み込みしてください</div>`;
+    console.warn('fetch failed:', e.message);
+    // エラーでも画面はそのまま、次の更新で自動リトライ
+    document.getElementById('updTime').textContent = '取得失敗 - 再試行中...';
   }
 }
 
