@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -159,45 +160,31 @@ const COINS = [
 ];
 
 let nowMC = {};
-let maxMC = (() => {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e) { return {}; }
-})();
-
-function saveMaxMC() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(maxMC)); } catch(e) {}
-}
+let maxMC = {};
 
 function applyMC(addr, mc) {
   if (!mc || isNaN(mc) || mc <= 0) return false;
   nowMC[addr] = mc;
   if (maxMC[addr] == null || mc > maxMC[addr]) {
     maxMC[addr] = mc;
-    saveMaxMC();
+    // Supabaseに最高値を保存
+    fetch(`/api/ohlcv?addr=${addr}&mc=${mc}`).catch(()=>{});
   }
   return true;
 }
 
-// Vercelサーバー経由でチャートの最高値を取得
-async function fetchMaxFromServer(addr) {
-  try {
-    const r = await fetch(`/api/ohlcv?addr=${addr}&from=${BASE_FROM}`);
-    if (!r.ok) return null;
-    const d = await r.json();
-    return d.maxMC || null;
-  } catch(e) { return null; }
-}
-
-// 起動時に全コインの最高値をサーバーから取得
+// 起動時に全コインの最高値をSupabaseから取得
 async function initMaxMC() {
   for (const c of COINS) {
-    if (maxMC[c.addr]) continue; // すでに保存済みならスキップ
-    const max = await fetchMaxFromServer(c.addr);
-    if (max && max > 0) {
-      maxMC[c.addr] = max;
-      saveMaxMC();
-      render();
-    }
-    await new Promise(r => setTimeout(r, 300)); // 連続リクエストを少し間引く
+    try {
+      const r = await fetch(`/api/ohlcv?addr=${c.addr}`);
+      const d = await r.json();
+      if (d.maxMC > 0) {
+        maxMC[c.addr] = d.maxMC;
+        render();
+      }
+    } catch(e) {}
+    await new Promise(r => setTimeout(r, 200));
   }
 }
 
@@ -335,5 +322,6 @@ fetchAll();
 initMaxMC(); // サーバーから過去最高値を取得
 setInterval(fetchAll, 60000);
 </script>
+
 </body>
 </html>
