@@ -181,11 +181,11 @@ async function initMaxMC() {
       const d = await r.json();
       if (d.maxMC > 0) {
         maxMC[c.addr] = d.maxMC;
-        render();
       }
     } catch(e) {}
     await new Promise(r => setTimeout(r, 200));
   }
+  render(); // 全部取得してから1回だけrender
 }
 
 async function fetchDex() {
