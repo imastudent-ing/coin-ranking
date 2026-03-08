@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     if (mc) {
       const newMC = parseFloat(mc);
       const getRes = await fetch(
-        `${SUPABASE_URL}/rest/v1/max_mc?addr=eq.${encodeURIComponent(addr)}&select=max_mc`,
+        `${SUPABASE_URL}/rest/v1/max_mc?addr=eq.${addr}&select=max_mc`,
         { headers }
       );
       const rows = await getRes.json();
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     }
 
     const getRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/max_mc?addr=eq.${encodeURIComponent(addr)}&select=max_mc`,
+      `${SUPABASE_URL}/rest/v1/max_mc?addr=eq.${addr}&select=max_mc`,
       { headers }
     );
     const rows = await getRes.json();
